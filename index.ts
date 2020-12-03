@@ -21,7 +21,7 @@ class ScaleUtil {
     }
 
     static divideScale(scale : number, i : number, n : number) : number {
-        return Math.min(1 / n, ScaleUtil.divideScale(scale, i, n)) * n 
+        return Math.min(1 / n, ScaleUtil.maxScale(scale, i, n)) * n 
     }
 
     static sinify(scale : number) : number {
@@ -43,16 +43,20 @@ class DrawingUtil {
         const sf1 : number = ScaleUtil.divideScale(sf, 0, parts)
         const sf2 : number = ScaleUtil.divideScale(sf, 1, parts)
         const sf3 : number = ScaleUtil.divideScale(sf, 2, parts)
+        const sf4 : number = ScaleUtil.divideScale(sf, 3, parts)
         const size : number = Math.min(w, h) / sizeFactor 
+        console.log("sf", sf1, sf2, sf3)
         context.save()
         context.translate(w / 2, h / 2)
+        context.rotate(sf4 * Math.PI / 2)
+        context.translate(0, -size / 2)
         for (var j = 0; j < 2; j++) {
             const si : number = 1 - 2 * j 
             context.save()
             context.scale(si, 1)
             DrawingUtil.drawLine(context, 0, size / 2, -size * 0.5 * sf1, size / 2)
             DrawingUtil.drawLine(context, -size / 2, size / 2, -size / 2, size / 2 - size * 0.5 * sf2)
-            DrawingUtil.drawLine(context, -size / 2, 0, -size / 2 - size * 0.5 * sf3, -size * 0.5 * sf3)
+            DrawingUtil.drawLine(context, -size / 2, 0, -size / 2 - size * 0.5 * sf3, size * 0.5 * sf3)
             context.restore()
         }
         context.restore()
@@ -139,7 +143,7 @@ class Animator {
 
     stop() {
         if (this.animated) {
-            this.animated = true 
+            this.animated = false 
             clearInterval(this.interval)
         }
     }
