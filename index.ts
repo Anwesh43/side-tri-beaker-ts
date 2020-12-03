@@ -205,3 +205,25 @@ class SideTriBeaker {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    stb : SideTriBeaker = new SideTriBeaker()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.stb.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.stb.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.stb.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
